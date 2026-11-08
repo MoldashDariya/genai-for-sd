@@ -11,9 +11,10 @@ Large Language Model (LLM): a neural network trained on a huge amount of text th
 token of a sequence. Users control the model with a prompt, and the amount of text the model can
 "see" at once is limited by its context window.
 
-This report looks at eight areas where GenAI is already used in practice. For every use case it
-describes the business value, the technical challenges, the weaknesses, and real products that
-implement it.
+This report looks at eight areas where GenAI is already used in practice. Every use case is described
+in two paragraphs: the first one explains what the solution does and its **business value**, the second
+one covers the **technical challenges** and **weak points**. After that comes a short list of
+**existing implementations** with a link and a one-sentence description.
 
 | # | Use case | Main GenAI technique |
 |---|---|---|
@@ -30,107 +31,77 @@ implement it.
 
 ## 1. AI coding assistants
 
-An assistant built into the IDE that suggests the next lines of code, explains code, writes
-documentation and answers questions about the project in a chat. This is the classic copilot
-pattern: the developer stays in control, the AI only proposes changes.
+An AI coding assistant is built into the IDE: it suggests the next lines of code, explains unfamiliar
+code, writes documentation and answers questions about the project in a chat. This is the classic
+copilot pattern, where the developer stays in control and the AI only proposes changes. **Business
+value:** developers spend much less time on boilerplate, typical patterns and searching documentation;
+new team members understand a large codebase faster because they can simply ask about it; routine work
+such as unit tests, comments and simple refactoring is done in a consistent way.
 
-**Business value**
-- Developers spend less time on boilerplate, typical patterns and searching documentation.
-- New team members understand an unfamiliar codebase faster, because they can ask questions about it.
-- Consistent quality of routine work: unit tests, comments, simple refactoring.
+**Technical challenges and weak points:** the model has to get the right part of the project into its
+context window (the open file, related classes, project conventions), and big repositories do not fit
+completely. Suggestions must appear in a fraction of a second, so inference has to be fast and cheap,
+and the company must control data privacy because code is sent to an external model provider. The main
+weakness is code that looks correct but calls functions that do not exist (hallucination) or hides
+subtle bugs and security vulnerabilities; developers may also accept suggestions without reading them
+("automation bias"), and quality is much lower for rare programming languages.
 
-**Technical challenges**
-- The model must get the right part of the project into its context window: the open file,
-  related classes, project conventions. Large repositories do not fit completely.
-- Suggestions must appear in a fraction of a second, so the inference has to be fast and cheap.
-- Code is sent to an external model provider, so the company has to control data privacy
-  and licences.
-
-**Weaknesses**
-- The model sometimes produces code that looks correct but calls functions that do not exist
-  (hallucination) or contains subtle bugs and security vulnerabilities.
-- Developers may accept suggestions without reading them carefully ("automation bias").
-- Quality depends on the language: popular languages work much better than rare ones.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| GitHub Copilot | https://github.com/features/copilot | Code completion, chat and code review inside VS Code, JetBrains IDEs and GitHub. Students of this course get an educational licence. |
-| Cursor | https://cursor.com | An AI-native code editor (a fork of VS Code) where chat and multi-file edits are the main way of working. |
-| Tabnine | https://www.tabnine.com | A coding assistant that can run on the company's own servers, focused on privacy. |
-| Amazon Q Developer | https://aws.amazon.com/q/developer/ | AWS assistant for writing code, upgrading Java versions and working with AWS services. |
+**Existing implementations:**
+- [GitHub Copilot](https://github.com/features/copilot) — code completion, chat and code review inside VS Code, JetBrains IDEs and GitHub; students of this course get an educational licence.
+- [Cursor](https://cursor.com) — an AI-native code editor (a fork of VS Code) where chat and multi-file edits are the main way of working.
+- [Tabnine](https://www.tabnine.com) — a privacy-focused coding assistant that can run on the company's own servers.
+- [Amazon Q Developer](https://aws.amazon.com/q/developer/) — the AWS assistant for writing code, upgrading Java versions and working with AWS services.
 
 ---
 
 ## 2. Autonomous coding agents
 
-A step further than a copilot: an AI agent receives a task in natural language ("fix this failing
-test", "add an endpoint") and completes it by itself. It reads files, runs commands, runs tests,
-looks at the results and repeats until the task is done. This is called an agentic workflow, and it
-is possible because the model can use tools (tool calling). The program that runs the model in such a
-loop and gives it access to files and the terminal is called an agentic harness.
+An AI agent goes a step further than a copilot: it receives a task in natural language ("fix this
+failing test", "add an endpoint") and completes it by itself. It reads files, runs commands and tests,
+looks at the results and repeats until the task is done. This is called an agentic workflow, and it is
+possible because the model can use tools (tool calling); the program that runs the model in such a loop
+and gives it access to files and the terminal is called an agentic harness. **Business value:** whole
+tasks, not just single lines, are automated (bug fixes, migrations, dependency updates), an engineer can
+run several tasks in parallel and act as a reviewer instead of a typist, and routine maintenance becomes
+much cheaper. It also makes "vibe coding" possible: a person describes the desired result in natural
+language and the agent writes all the code, so even non-programmers can build simple tools.
 
-**Business value**
-- Whole tasks, not just single lines, are automated: bug fixes, migrations, dependency updates.
-- An engineer can run several tasks in parallel and act as a reviewer instead of a typist.
-- Routine maintenance work becomes much cheaper.
-- It makes "vibe coding" possible: a person describes the desired result in natural language and the
-  agent writes all the code, so even non-programmers can build simple tools.
+**Technical challenges and weak points:** the agent needs a safe sandbox because it executes real
+commands; long tasks need planning and memory, because the context window fills up and old information
+has to be summarised or dropped; and it is hard for the agent to decide when the task is really
+finished. A small mistake early in the plan can grow into a large wrong change, and agents can be
+manipulated through text in files or web pages they read (prompt injection). Running many steps costs
+many tokens, so planning this cost (tokenomics) becomes a real part of the project budget, and a
+human-in-the-loop review is still needed before the change is merged.
 
-**Technical challenges**
-- The agent needs a safe environment (sandbox), because it executes real commands.
-- Long tasks require planning and memory: the context window fills up and old information has to be
-  summarised or dropped.
-- It is hard to evaluate the result automatically: the agent must know when the task is really finished.
-
-**Weaknesses**
-- A small mistake early in the plan can grow into a large wrong change.
-- Agents can be manipulated through text in files or web pages they read (prompt injection).
-- Running many steps costs many tokens, so complex tasks can be expensive. Planning this cost
-  (tokenomics) becomes a real part of the project budget.
-- A human-in-the-loop review is still needed before the change is merged.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| Claude Code | https://www.anthropic.com/claude-code | An agentic coding tool from Anthropic that works in the terminal and IDE, edits files and runs commands. |
-| OpenAI Codex | https://openai.com/codex/ | A coding agent that works in a cloud sandbox and in the CLI, and can prepare pull requests. |
-| Gemini CLI | https://github.com/google-gemini/gemini-cli | An open-source command-line agent from Google. |
-| EPAM AI/Run CodeMie CLI | https://github.com/codemie-ai/codemie-code | EPAM's open-source CLI that runs its own coding agent and manages other agents (Claude Code, Codex, Gemini CLI) from one place; CodeMie is available to students of this course. |
+**Existing implementations:**
+- [Claude Code](https://www.anthropic.com/claude-code) — an agentic coding tool from Anthropic that works in the terminal and IDE, edits files and runs commands.
+- [OpenAI Codex](https://openai.com/codex/) — a coding agent that works in a cloud sandbox and in the CLI and can prepare pull requests.
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) — an open-source command-line agent from Google.
+- [EPAM AI/Run CodeMie CLI](https://github.com/codemie-ai/codemie-code) — EPAM's open-source CLI that runs its own coding agent and manages other agents from one place; CodeMie is available to students of this course.
 
 ---
 
 ## 3. Customer support chatbots
 
-A chatbot answers customer questions 24/7: order status, refunds, how to use the product. Modern
-bots do not use fixed scripts. They find the answer in the company's help articles (RAG) and write it
-in natural language, and they hand the conversation to a person when they are not sure.
+A support chatbot answers customer questions 24/7: order status, refunds, how to use the product.
+Modern bots do not follow fixed scripts: they find the answer in the company's help articles (RAG),
+write it in natural language and hand the conversation to a person when they are not sure. **Business
+value:** most simple requests are solved instantly without waiting in a queue, support costs drop while
+human agents focus on complex and emotional cases, and support becomes available in many languages
+without hiring a team for each one.
 
-**Business value**
-- Most simple requests are solved instantly, without waiting in a queue.
-- Support costs drop, while human agents focus on complex and emotional cases.
-- Support is available in many languages without hiring for each language.
+**Technical challenges and weak points:** answers must be based only on current company documents, so
+the knowledge base has to be kept up to date and well indexed; the bot needs integrations with internal
+systems (orders, payments, CRM) through APIs; and guardrails must prevent the bot from promising things
+the company does not offer. When the bot invents a policy that does not exist, the company can be held
+responsible for it. Customers get frustrated when the bot does not understand them and does not pass
+them to a person, and personal data of customers goes through the model, which creates privacy risks.
 
-**Technical challenges**
-- Answers must be based only on current company documents, so the knowledge base has to be kept
-  up to date and well indexed.
-- Integration with internal systems (orders, payments, CRM) through APIs.
-- Guardrails must prevent the bot from promising things the company does not offer.
-
-**Weaknesses**
-- When the bot invents a policy that does not exist, the company can be held responsible for it.
-- Customers get frustrated when the bot does not understand them and does not pass them to a person.
-- Personal data of customers goes through the model, which creates privacy risks.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| Intercom Fin | https://fin.ai | An AI agent for customer service that answers from the company's help center content. |
-| Zendesk AI | https://www.zendesk.com/service/ai/ | AI agents and assistant features inside the Zendesk support platform. |
-| Klarna AI assistant | https://www.klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/ | A well-known case: in its first month the assistant handled two thirds of Klarna's customer service chats. |
+**Existing implementations:**
+- [Intercom Fin](https://fin.ai) — an AI agent for customer service that answers from the company's help center content.
+- [Zendesk AI](https://www.zendesk.com/service/ai/) — AI agents and assistant features inside the Zendesk support platform.
+- [Klarna AI assistant](https://www.klarna.com/international/press/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month/) — a well-known case where the assistant handled two thirds of Klarna's customer service chats in its first month.
 
 ---
 
@@ -138,126 +109,88 @@ in natural language, and they hand the conversation to a person when they are no
 
 Employees ask questions in natural language and get an answer collected from internal documents:
 wikis, Confluence, SharePoint, tickets, e-mails. The documents are split into chunks, converted to
-embeddings and stored in a vector database. For each question the system retrieves the most similar
-chunks and gives them to the LLM. This is Retrieval-Augmented Generation (RAG). It is usually
-preferred over fine-tuning the model on company documents, because the index can be updated every
-day, while retraining a model is slow and expensive.
+embeddings and stored in a vector database; for each question the system retrieves the most similar
+chunks and gives them to the LLM. This is Retrieval-Augmented Generation (RAG), and it is usually
+preferred over fine-tuning the model on company documents, because the index can be updated every day,
+while retraining a model is slow and expensive. **Business value:** people spend less time searching for
+information and asking colleagues, knowledge does not get lost when employees leave, and every answer
+contains links to its sources, so it can be checked.
 
-**Business value**
-- People spend less time searching for information and asking colleagues.
-- Knowledge does not get lost when employees leave.
-- Answers contain links to sources, so they can be checked.
+**Technical challenges and weak points:** access rights are critical, because a user must only see
+answers built from documents they are allowed to read; the way documents are split and the choice of the
+embedding model strongly affect quality; and the index must be updated whenever documents change. If the
+retrieval step finds the wrong documents, the model confidently gives a wrong answer, old or
+contradictory documents lead to outdated answers, and the cost of indexing and storage grows with the
+amount of data.
 
-**Technical challenges**
-- Access rights: a user must only see answers built from documents they are allowed to read.
-- Choosing how to split documents and which embedding model to use strongly affects quality.
-- The index has to be updated when documents change.
-
-**Weaknesses**
-- If the retrieval step finds the wrong documents, the model confidently gives a wrong answer.
-- Old or contradictory documents lead to outdated answers.
-- Costs of indexing and storage grow with the amount of data.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| Glean | https://www.glean.com | An enterprise search and assistant platform that connects to many company tools. |
-| Microsoft 365 Copilot | https://www.microsoft.com/microsoft-365/copilot | An assistant in Word, Outlook, Teams etc. that uses the user's company data. |
-| Notion AI | https://www.notion.com/product/ai | Q&A and writing assistant over a team's Notion workspace. |
-| EPAM AI DIAL | https://dialx.ai | EPAM's open-source platform that gives access to different LLMs and lets companies build RAG applications on top of them. |
+**Existing implementations:**
+- [Glean](https://www.glean.com) — an enterprise search and assistant platform that connects to many company tools.
+- [Microsoft 365 Copilot](https://www.microsoft.com/microsoft-365/copilot) — an assistant in Word, Outlook, Teams and other apps that uses the user's company data.
+- [Notion AI](https://www.notion.com/product/ai) — a Q&A and writing assistant over a team's Notion workspace.
+- [EPAM AI DIAL](https://dialx.ai) — EPAM's open-source platform that gives access to different LLMs and lets companies build RAG applications on top of them.
 
 ---
 
 ## 5. Automated software testing
 
-GenAI writes unit tests, generates test data, turns test cases written in plain English into
-automated tests and explains why a test failed.
+GenAI writes unit tests, generates test data, turns test cases written in plain English into automated
+tests and explains why a test failed. **Business value:** test coverage grows for legacy code that had no
+tests at all, QA engineers can describe tests in natural language instead of maintaining fragile
+scripts, and CI/CD pipelines give faster feedback to the team.
 
-**Business value**
-- Higher test coverage for legacy code that had no tests.
-- QA engineers write tests in natural language instead of fragile scripts.
-- Faster feedback in CI/CD pipelines.
+**Technical challenges and weak points:** generated tests must really check the expected behaviour and
+not just repeat what the current code does; they also have to compile and run, so the tool must
+understand the build system and dependencies, and UI tests must survive changes of the page layout. The
+model may write tests that always pass, which gives a false feeling of safety, and if the code already
+has a bug, the generated test may "lock in" the wrong behaviour. Without review the test suite quickly
+becomes large and hard to maintain.
 
-**Technical challenges**
-- Generated tests must really check behaviour and not just repeat what the current code does.
-- Tests need to compile and run, so the tool must understand the build system and dependencies.
-- UI tests must survive changes of the page layout.
-
-**Weaknesses**
-- The model may write tests that always pass, which gives a false feeling of safety.
-- If the code has a bug, the generated test may "lock in" the wrong behaviour.
-- Generated tests still need review, otherwise the test suite becomes large and hard to maintain.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| Diffblue Cover | https://www.diffblue.com | Automatically writes Java unit tests for existing code. |
-| Qodo | https://www.qodo.ai | AI for code review and test generation in the IDE and in pull requests. |
-| testRigor | https://testrigor.com | End-to-end tests written in plain English and executed automatically. |
+**Existing implementations:**
+- [Diffblue Cover](https://www.diffblue.com) — automatically writes Java unit tests for existing code.
+- [Qodo](https://www.qodo.ai) — AI for code review and test generation in the IDE and in pull requests.
+- [testRigor](https://testrigor.com) — end-to-end tests written in plain English and executed automatically.
 
 ---
 
 ## 6. Marketing and creative content
 
 Multimodal models create texts, images, video and voice for advertising, social media, product
-descriptions and design drafts.
+descriptions and design drafts. **Business value:** content is produced many times faster and in many
+variants for A/B testing, messages can be personalised for different customer segments and languages,
+and small companies get design and copywriting quality that used to be expensive.
 
-**Business value**
-- Content is produced many times faster and in many variants for A/B testing.
-- Personalised messages for different customer segments and languages.
-- Small companies get access to design and copywriting quality that used to be expensive.
+**Technical challenges and weak points:** it is hard to keep a consistent brand style and voice across
+thousands of generated pieces and to control the result precisely (layout, exact text on images,
+product details), and image and video generation needs a lot of computing power. Copyright is still an
+open question, both for the training data and for the ownership of generated content; the content often
+looks generic and repetitive; and the risk of deepfakes and misleading content makes many companies
+require labelling of AI-generated material.
 
-**Technical challenges**
-- Keeping a consistent brand style and voice across thousands of generated pieces.
-- Controlling the result precisely (layout, exact text on images, product details).
-- Generating images and video needs a lot of computing power.
-
-**Weaknesses**
-- Copyright questions: training data and ownership of generated content.
-- Generic, repetitive "AI-looking" content.
-- Risk of deepfakes and misleading content, so many companies require labelling.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| Adobe Firefly | https://www.adobe.com/products/firefly.html | Image and video generation integrated into Photoshop and other Adobe tools. |
-| Canva Magic Studio | https://www.canva.com/magic/ | AI design and writing tools inside Canva. |
-| Jasper | https://www.jasper.ai | An AI platform for marketing texts with brand voice settings. |
-| Midjourney | https://www.midjourney.com | A popular image generation service. |
+**Existing implementations:**
+- [Adobe Firefly](https://www.adobe.com/products/firefly.html) — image and video generation integrated into Photoshop and other Adobe tools.
+- [Canva Magic Studio](https://www.canva.com/magic/) — a set of AI design and writing tools inside Canva.
+- [Jasper](https://www.jasper.ai) — an AI platform for marketing texts with brand voice settings.
+- [Midjourney](https://www.midjourney.com) — a popular image generation service.
 
 ---
 
 ## 7. Healthcare clinical documentation
 
-During an appointment the system listens to the conversation between the doctor and the patient
-(with consent), turns speech into text and writes a structured clinical note. The doctor checks and
-signs it.
+During an appointment the system listens to the conversation between the doctor and the patient (with
+consent), turns speech into text and writes a structured clinical note, which the doctor checks and
+signs. **Business value:** doctors spend much less time on paperwork and more time with patients, burnout
+of medical staff goes down, and medical records become more complete and standardised.
 
-**Business value**
-- Doctors spend much less time on paperwork and more time with patients.
-- Less burnout of medical staff.
-- More complete and standardised medical records.
+**Technical challenges and weak points:** medical terminology, accents and noisy rooms make speech
+recognition difficult; medical data is protected by strict regulations (for example HIPAA in the USA and
+GDPR in Europe); and the solution must integrate with electronic health record systems. A small error in
+a medicine name or dose can harm the patient, and the model may add details that were never said, so the
+doctor must always review the note. Because the cost of a mistake is so high, adoption is slow and the
+legal risks are significant.
 
-**Technical challenges**
-- Medical terminology, accents and noisy rooms make speech recognition difficult.
-- Strict regulations for medical data (for example HIPAA in the USA, GDPR in Europe).
-- Integration with electronic health record systems.
-
-**Weaknesses**
-- A small error in a medicine name or dose can harm the patient, so the doctor must always
-  review the note.
-- The model may add details that were never said.
-- High cost of mistakes means slow adoption and legal risks.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| Microsoft Dragon Copilot | https://www.microsoft.com/en-us/health-solutions/clinical-workflow/dragon-copilot | Clinical voice assistant that creates documentation from the conversation (formerly Nuance DAX). |
-| Abridge | https://www.abridge.com | Generates clinical notes from patient-doctor conversations. |
+**Existing implementations:**
+- [Microsoft Dragon Copilot](https://www.microsoft.com/en-us/health-solutions/clinical-workflow/dragon-copilot) — a clinical voice assistant (formerly Nuance DAX) that creates documentation from the conversation.
+- [Abridge](https://www.abridge.com) — generates clinical notes from patient-doctor conversations.
 
 ---
 
@@ -265,29 +198,19 @@ signs it.
 
 An AI tutor explains topics, asks guiding questions, checks answers and adapts to the level of each
 student. Good tutors are instructed through a carefully designed system prompt not to give the final
-answer immediately, but to help the student think.
+answer immediately, but to help the student think. **Business value:** every student gets something close
+to a personal tutor at low cost, teachers save time on preparing materials and checking routine tasks,
+and language learning becomes more interactive thanks to conversation practice at any time.
 
-**Business value**
-- Every student gets something close to a personal tutor at low cost.
-- Teachers save time on preparing materials and checking routine tasks.
-- Learning languages becomes more interactive: conversation practice at any time.
+**Technical challenges and weak points:** prompt engineering and guardrails are needed so that the tutor
+teaches instead of simply solving the task; explanations must be adapted to the age and knowledge level
+of the student; and the data of children must be protected. Students can use GenAI to cheat instead of
+learning, wrong explanations are dangerous because a student cannot easily notice them, and access to
+devices and the internet is still unequal.
 
-**Technical challenges**
-- Prompt engineering and guardrails so that the tutor teaches instead of just solving the task.
-- Adapting explanations to age and knowledge level.
-- Protecting the data of children.
-
-**Weaknesses**
-- Students can use GenAI to cheat instead of learning.
-- Wrong explanations are dangerous, because a student cannot easily notice them.
-- Unequal access to devices and internet.
-
-**Examples**
-
-| Name | Link | Description |
-|---|---|---|
-| Khanmigo | https://www.khanmigo.ai | Khan Academy's AI tutor and teaching assistant. |
-| Duolingo Max | https://blog.duolingo.com/duolingo-max/ | Duolingo subscription with "Explain My Answer" and role-play conversations powered by GenAI. |
+**Existing implementations:**
+- [Khanmigo](https://www.khanmigo.ai) — Khan Academy's AI tutor and teaching assistant.
+- [Duolingo Max](https://blog.duolingo.com/duolingo-max/) — a Duolingo subscription with "Explain My Answer" and role-play conversations powered by GenAI.
 
 ---
 
