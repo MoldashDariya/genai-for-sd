@@ -5,7 +5,7 @@ Practical assignment of the Course Introduction module.
 | File | Content |
 |---|---|
 | [`genai-applications-report.md`](genai-applications-report.md) | **Report** on 8 GenAI use cases: business value, technical challenges, weaknesses and real products (name, link, description) for each |
-| [`glossary.md`](glossary.md) | **Glossary**: 24 GenAI terms from the report, explained in simple words, with a link to my Module 1 practice |
+| [`glossary.md`](glossary.md) | **Glossary**: 24 GenAI terms from the report, explained in my own words with personal examples |
 | [`term-graph.png`](term-graph.png) · [`term-graph.html`](term-graph.html) | **Term relationship graph** (optional task): how often each term is used in the report, explicitly and implicitly, and which terms appear together |
 | [`term-mentions.md`](term-mentions.md) | The same counts as a table |
 | [`tools/build_term_graph.py`](tools/build_term_graph.py) | Script that builds the graph and the table from the report automatically |
@@ -37,9 +37,11 @@ The assignment was completed with an **agentic workflow**, as suggested in the a
    the PNG is a screenshot of that page made with headless Chrome.
 4. The agent committed and pushed the result, checking first that no secrets or irrelevant files
    get into the repository.
-5. I reviewed the report, the glossary and the graph, asked for changes (for example, adding terms
-   from the course introduction: AI-native tool, agentic harness, vibe coding, tokenomics) and submitted
-   the link on the university platform.
+5. I reviewed the report and the graph and asked for changes (for example, adding terms from the
+   course introduction: AI-native tool, agentic harness, vibe coding, tokenomics, and describing every
+   use case in two paragraphs).
+6. **The glossary I wrote myself**: I selected the terms from the report and explained each of them in
+   my own words with my own examples; the agent only formatted the file and added the table of contents.
 
 ## Rebuild
 
