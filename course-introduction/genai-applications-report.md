@@ -68,12 +68,15 @@ pattern: the developer stays in control, the AI only proposes changes.
 A step further than a copilot: an AI agent receives a task in natural language ("fix this failing
 test", "add an endpoint") and completes it by itself. It reads files, runs commands, runs tests,
 looks at the results and repeats until the task is done. This is called an agentic workflow, and it
-is possible because the model can use tools (tool calling).
+is possible because the model can use tools (tool calling). The program that runs the model in such a
+loop and gives it access to files and the terminal is called an agentic harness.
 
 **Business value**
 - Whole tasks, not just single lines, are automated: bug fixes, migrations, dependency updates.
 - An engineer can run several tasks in parallel and act as a reviewer instead of a typist.
 - Routine maintenance work becomes much cheaper.
+- It makes "vibe coding" possible: a person describes the desired result in natural language and the
+  agent writes all the code, so even non-programmers can build simple tools.
 
 **Technical challenges**
 - The agent needs a safe environment (sandbox), because it executes real commands.
@@ -84,7 +87,8 @@ is possible because the model can use tools (tool calling).
 **Weaknesses**
 - A small mistake early in the plan can grow into a large wrong change.
 - Agents can be manipulated through text in files or web pages they read (prompt injection).
-- Running many steps costs many tokens, so complex tasks can be expensive.
+- Running many steps costs many tokens, so complex tasks can be expensive. Planning this cost
+  (tokenomics) becomes a real part of the project budget.
 - A human-in-the-loop review is still needed before the change is merged.
 
 **Examples**

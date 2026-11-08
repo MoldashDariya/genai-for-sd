@@ -47,6 +47,10 @@ TERMS = {
     "Copilot": ("agents", r"copilots?", r"assistants?\b|suggest\w*"),
     "Multimodal model": ("technique", r"multimodal", r"images?\b|video|voice|speech"),
     "Guardrails": ("risk", r"guardrails?", r"filters?|prevent the bot|limits on"),
+    "AI-native tool": ("agents", r"ai-native", r"built around ai|main way of working"),
+    "Agentic harness": ("agents", r"agentic harness(es)?", r"agentic coding tool|command-line agent|in the terminal"),
+    "Vibe coding": ("technique", r"vibe coding", r"describes the desired result|non-programmers"),
+    "Tokenomics": ("concept", r"tokenomics", r"costs? many|project budget"),
     "Human-in-the-loop": ("risk", r"human-in-the-loop",
                           r"review\w*|to a person|doctor (checks|must)|in control|signs it"),
 }

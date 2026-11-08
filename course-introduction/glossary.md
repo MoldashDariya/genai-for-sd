@@ -1,7 +1,7 @@
 # Glossary of GenAI Terms
 
 Terms that appear in the [GenAI applications report](genai-applications-report.md),
-explained in my own words. The [term graph](term-graph.html) shows how often each term is used
+explained in simple words. The [term graph](term-graph.html) shows how often each term is used
 in the report and which terms appear together.
 
 | # | Term | My explanation |
@@ -17,7 +17,7 @@ in the report and which terms appear together.
 | 9 | **Embedding** | A list of numbers that represents the meaning of a text. Texts with similar meaning get similar numbers, so the computer can find "similar by meaning", not only by exact words. |
 | 10 | **Vector database** | A database that stores embeddings and can quickly find the ones closest to a query. It is the search part of most RAG systems. |
 | 11 | **Fine-tuning** | Additional training of an already trained model on a smaller special dataset, so that it gets better at one task, style or domain. |
-| 12 | **Inference** | Using an already trained model to get an answer. Training happens once and is very expensive; inference happens on every request and must be fast and cheap. |
+| 12 | **Inference** | Using an already trained model to get an answer. Training happens once and is very expensive; inference happens on every request and must be fast and cheap. In Module 1 I trained small networks from scratch in Java and Python: the `train()` method is training, and every call of `predict()` on the ready network is inference. |
 | 13 | **AI agent** | A program where an LLM does not only answer but decides what to do next: makes a plan, uses tools, looks at the results and continues until the goal is reached. |
 | 14 | **Agentic workflow** | A process where one or several AI agents complete a task in many steps (plan → act → check → repeat) instead of giving one answer. |
 | 15 | **Tool calling** | The ability of a model to ask the application to run a function for it (search, run a command, call an API) and then use the result. This is how agents act in the real world. |
@@ -26,3 +26,7 @@ in the report and which terms appear together.
 | 18 | **Guardrails** | Rules and checks around a model that keep it safe and on-topic: filters for input and output, limits on what it may do, checks of the answer before it is shown. |
 | 19 | **Prompt injection** | An attack where hidden or malicious instructions are placed in text the model reads (a web page, a document, an e-mail) to make it ignore its rules or do something harmful. |
 | 20 | **Human-in-the-loop** | A design where a person checks or approves the AI's result at important points, for example reviews generated code before merge or a doctor signs a generated note. |
+| 21 | **AI-native tool** | A tool designed around AI from the start, where talking to the AI is the main way of working (for example the Cursor editor), unlike a copilot that is added to an old tool. |
+| 22 | **Agentic harness** | The program "around" the model that turns it into an agent: it runs the loop, gives the model tools (files, terminal, search) and asks the user for permission. Examples: Claude Code, Codex CLI, Gemini CLI, CodeMie CLI. |
+| 23 | **Vibe coding** | Building software by describing what you want in natural language and letting the AI write the code, without going into details yourself. Fast for prototypes, but risky if nobody reads the result. |
+| 24 | **Tokenomics** | The economics of tokens: how much a GenAI task costs, because providers charge per input and output token. Long contexts and many agent steps make it expensive, so cost has to be planned. |
